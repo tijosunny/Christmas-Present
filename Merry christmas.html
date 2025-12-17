@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Card ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 50%, #dc143c 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .snowflake {
+            position: absolute;
+            color: white;
+            font-size: 1.5em;
+            animation: fall linear infinite;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .tree {
+            position: absolute;
+            bottom: 0;
+            opacity: 0.15;
+        }
+
+        .tree-left {
+            left: 5%;
+            width: clamp(80px, 15vw, 150px);
+        }
+
+        .tree-right {
+            right: 5%;
+            width: clamp(80px, 15vw, 150px);
+        }
+
+        .tree-triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 80px solid white;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .tree-triangle:nth-child(2) {
+            border-bottom-width: 70px;
+            top: -30px;
+        }
+
+        .tree-triangle:nth-child(3) {
+            border-bottom-width: 60px;
+            top: -60px;
+        }
+
+        .tree-trunk {
+            width: 20px;
+            height: 30px;
+            background: white;
+            margin: -10px auto 0;
+        }
+
+        .card-container {
+            perspective: 2000px;
+            width: min(450px, 90vw);
+            height: min(600px, 85vh);
+            position: relative;
+            z-index: 10;
+            touch-action: manipulation;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            border: 8px solid #dc143c;
+        }
+
+        .card-front::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px dashed #dc143c;
+            border-radius: 10px;
+            opacity: 0.3;
+        }
+
+        .front-tree {
+            font-size: clamp(4rem, 15vw, 8rem);
+            margin-bottom: 20px;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .front-title {
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: #dc143c;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .front-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #666;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .tap-hint {
+            position: absolute;
+            bottom: 30px;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #dc143c;
+            animation: pulse 2s ease-in-out infinite;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+            transform: rotateY(180deg);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: 8px solid #dc143c;
+            overflow-y: auto;
+        }
+
+        .card-back::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(220,20,60,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(220,20,60,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .inside-decoration {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+
+        .deco-1 { top: 20px; left: 20px; }
+        .deco-2 { top: 20px; right: 20px; }
+        .deco-3 { bottom: 20px; left: 20px; }
+        .deco-4 { bottom: 20px; right: 20px; }
+
+        .inside-content {
+            text-align: center;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        .inside-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: #dc143c;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .inside-message {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            max-width: 100%;
+        }
+
+        .gift-box-container {
+            position: relative;
+            width: min(180px, 40vw);
+            height: min(180px, 40vw);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gift-box-container:hover {
+            transform: scale(1.08);
+        }
+
+        .gift-box-container:active {
+            transform: scale(0.95);
+        }
+
+        .mini-gift {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .mini-box-lid {
+            width: 100%;
+            height: 35%;
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            border-radius: 10px 10px 3px 3px;
+            position: absolute;
+            top: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: bottom;
+            z-index: 10;
+        }
+
+        .mini-box-base {
+            width: 100%;
+            height: 65%;
+            background: linear-gradient(135deg, #ff1744 0%, #c41e3a 100%);
+            border-radius: 3px 3px 10px 10px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .mini-ribbon-v {
+            width: 15%;
+            height: 100%;
+            background: linear-gradient(to right, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            position: absolute;
+            left: 42.5%;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+            z-index: 5;
+        }
+
+        .mini-ribbon-h {
+            width: 100%;
+            height: 15%;
+            background: linear-gradient(to bottom, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            position: absolute;
+            top: 42.5%;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+            z-index: 5;
+        }
+
+        .mini-bow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 40%;
+            z-index: 15;
+        }
+
+        .mini-bow-center {
+            width: 35%;
+            height: 35%;
+            background: radial-gradient(circle, #ffd700 0%, #daa520 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: 32.5%;
+            left: 32.5%;
+            box-shadow: 0 2px 8px rgba(255,215,0,0.6);
+        }
+
+        .mini-bow-loop {
+            width: 40%;
+            height: 60%;
+            background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: 5%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .mini-bow-loop-left {
+            left: -10%;
+            transform: rotate(-20deg);
+        }
+
+        .mini-bow-loop-right {
+            right: -10%;
+            transform: rotate(20deg);
+        }
+
+        .opened .mini-box-lid {
+            transform: rotateX(-110deg) translateY(-20px);
+            opacity: 0.3;
+        }
+
+        .gift-hint {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #dc143c;
+            font-weight: bold;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            border-radius: 25px;
+            padding: clamp(30px, 5vw, 50px);
+            max-width: min(500px, 90vw);
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            transform: scale(0.8) translateY(50px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            text-align: center;
+            border: 3px solid #dc143c;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #dc143c;
+            background: white;
+            color: #dc143c;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            background: #dc143c;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-icon {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 20px;
+            animation: celebrate 1s ease-in-out infinite;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+        }
+
+        .modal h2 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: #dc143c;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .modal p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .gift-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            padding: clamp(12px, 3vw, 18px) clamp(30px, 6vw, 50px);
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(220,20,60,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .gift-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .gift-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(220,20,60,0.6);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 3000;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .card-back {
+                padding: 30px 20px;
+            }
+            
+            body {
+                overflow-x: hidden;
+            }
+            
+            .tap-hint {
+                bottom: 20px;
+            }
+            
+            .inside-message {
+                font-size: clamp(0.95rem, 3vw, 1.2rem);
+            }
+            
+            .modal {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card-front {
+                padding: 30px 20px;
+            }
+            
+            .front-tree {
+                font-size: clamp(3rem, 15vw, 8rem);
+            }
+            
+            .gift-box-container {
+                width: min(150px, 45vw);
+                height: min(150px, 45vw);
+            }
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .gift-box-container:hover {
+                transform: scale(1);
+            }
+            
+            .gift-box-container:active {
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="stars"></div>
+
+    <div class="tree tree-left">
+        <div class="tree-triangle"></div>
+        <div class="tree-triangle"></div>
+        <div class="tree-triangle"></div>
+        <div class="tree-trunk"></div>
+    </div>
+    <div class="tree tree-right">
+        <div class="tree-triangle"></div>
+        <div class="tree-triangle"></div>
+        <div class="tree-triangle"></div>
+        <div class="tree-trunk"></div>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="card">
+            <div class="card-face card-front">
+                <div class="front-tree">🎄</div>
+                <h1 class="front-title">Merry Christmas!</h1>
+                <p class="front-subtitle">Open your card for a special surprise</p>
+                <div class="tap-hint">👆 Tap to Open Card</div>
+            </div>
+
+            <div class="card-face card-back">
+                <div class="inside-decoration deco-1">❄️</div>
+                <div class="inside-decoration deco-2">⭐</div>
+                <div class="inside-decoration deco-3">🎄</div>
+                <div class="inside-decoration deco-4">🎁</div>
+
+                <div class="inside-content">
+                    <h2 class="inside-title">🎅 Ho Ho Ho! 🎅</h2>
+                    <p class="inside-message">
+                        Wishing you all the magic and wonder of the holiday season! 
+                        May your days be merry, your heart be light, and your Christmas be filled with love and joy.
+                    </p>
+                </div>
+
+                <div class="gift-box-container" id="giftBox">
+                    <div class="mini-gift">
+                        <div class="mini-box-lid"></div>
+                        <div class="mini-bow">
+                            <div class="mini-bow-loop mini-bow-loop-left"></div>
+                            <div class="mini-bow-center"></div>
+                            <div class="mini-bow-loop mini-bow-loop-right"></div>
+                        </div>
+                        <div class="mini-ribbon-v"></div>
+                        <div class="mini-ribbon-h"></div>
+                        <div class="mini-box-base"></div>
+                    </div>
+                </div>
+
+                <div class="gift-hint">✨ Click the gift box! ✨</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <button class="close-btn" id="closeBtn">×</button>
+            <div class="modal-icon">🎁</div>
+            <h2>Your Gift Awaits!</h2>
+            <p>Here's a special Amazon gift card to brighten your holiday season! Treat yourself to something wonderful! A personal greeting and gift to Ananya from Christmas Santa! 🎉</p>
+            <a href="https://www.amazon.in/g/ONATBDSO7FKS6MFP?ref=gc_typ" target="_blank" class="gift-btn">
+                <span style="position: relative; z-index: 1;">🎄 Claim Your Gift Card 🎄</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const starsContainer = document.getElementById('stars');
+        const starCount = window.innerWidth < 768 ? 30 : 50;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 2;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+            starsContainer.appendChild(star);
+        }
+
+        function createSnowflakes() {
+            const snowflakeCount = window.innerWidth < 768 ? 20 : 35;
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = (Math.random() * 0.8 + 0.8) + 'em';
+                document.body.appendChild(snowflake);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#dc143c', '#ffffff', '#ffd700', '#32cd32'];
+            const shapes = ['circle', 'square'];
+            
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = -10 + 'px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                if (shapes[Math.floor(Math.random() * shapes.length)] === 'square') {
+                    confetti.style.borderRadius = '0';
+                } else {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                confetti.style.animation = `confettiFall ${Math.random() * 2 + 3}s linear forwards`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        const card = document.getElementById('card');
+        const giftBox = document.getElementById('giftBox');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeBtn');
+
+        let cardOpened = false;
+
+        // Handle both click and touch events
+        card.addEventListener('click', (e) => {
+            if (!cardOpened && !e.target.closest('.gift-box-container')) {
+                card.classList.add('flipped');
+                cardOpened = true;
+            }
+        });
+        
+        card.addEventListener('touchend', (e) => {
+            if (!cardOpened && !e.target.closest('.gift-box-container')) {
+                e.preventDefault();
+                card.classList.add('flipped');
+                cardOpened = true;
+            }
+        }, { passive: false });
+
+        // Handle gift box interaction
+        const handleGiftOpen = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            giftBox.classList.add('opened');
+            createConfetti();
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 600);
+        };
+
+        giftBox.addEventListener('click', handleGiftOpen);
+        giftBox.addEventListener('touchend', handleGiftOpen, { passive: false });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                giftBox.classList.remove('opened');
+            }, 400);
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeBtn.click();
+            }
+        });
+
+        createSnowflakes();
+    </script>
+</body>
+</html>
